@@ -41,13 +41,13 @@ rf  = RandomForestClassifier(n_estimators=n_estimators)
 
 param_dist = {
     'n_estimators': [100, 200, 500, 820, 1000],
-    'max_depth': [None, 10, 20, 30, 40, 50],
+    'max_depth': [None, 1, 2, 3, 4, 5],
     'min_samples_split': [2, 5,]
 }
 
 random_search = RandomizedSearchCV(estimator=rf, param_distributions=param_dist, n_iter=10, cv=5, random_state=42)
 
-with mlflow.start_run(run_name="RF_model_registry_3") as parent_run:
+with mlflow.start_run(run_name="RF_model_registry_") as parent_run:
     random_search.fit(X_train, y_train)
 
     for i in range(len(random_search.cv_results_['params'])):
