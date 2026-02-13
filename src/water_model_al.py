@@ -33,7 +33,9 @@ import pickle
 X_train = train_processed_data.iloc[:,0:-1].values
 y_train = train_processed_data.iloc[:,-1].values
 
-n_estimators = 740
+n_estimators = 523
+
+mlflow.autolog()
 
 with mlflow.start_run():
 
@@ -46,8 +48,6 @@ with mlflow.start_run():
     X_test = test_processed_data.iloc[:,0:-1].values
     y_test = test_processed_data.iloc[:,-1].values
 
-    train_df = mlflow.data.from_pandas(test_processed_data)
-    test_df = mlflow.data.from_pandas(test_processed_data)
 
     from sklearn.metrics import accuracy_score,precision_score,recall_score,f1_score
 
@@ -58,33 +58,9 @@ with mlflow.start_run():
     acc = accuracy_score(y_test,y_pred)
     precision = precision_score(y_test,y_pred)
     recall = recall_score(y_test,y_pred)
-    f1_score = f1_score(y_test,y_pred)
-
-    mlflow.log_metric("acc",acc)
-    mlflow.log_metric("precision", precision)
-    mlflow.log_metric("recall", recall)
-    mlflow.log_metric("f1-score",f1_score)
-
-    mlflow.log_param("n_estimators", n_estimators)
-
-    cm = confusion_matrix(y_test, y_pred)
-    plt.figure(figsize=(5,5))
-    sns.heatmap(cm, annot=True)
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.title("Confustion Matrix")
-    plt.savefig("confusion_matrix.png")
-    
-    mlflow.log_artifact("confusion_matrix.png")
-
-    mlflow.sklearn.log_model(clf, "GradientBoostingClassifier")
+    f1_score = f1_score(y_test,y_pred) 
 
     mlflow.log_artifact(__file__)
-
-    mlflow.log_inputs([test_df, train_df], ["test", "train"], [None, {"tag": "data"}])
-
-    mlflow.set_tag("author", "Bharath")
-    mlflow.set_tag("model", "Gradient Boost")
 
     print("acc",acc)
     print("precision", precision)
